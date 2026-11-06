@@ -244,7 +244,6 @@ private:
     std::vector<PalayControlEventItem> eventQueue;
     int32_t audioStreamType_;
     int64_t seekTabel_[0x2] = {-1, -1};
-    uint32_t continuousAudFull_;
 private:
     PlayerControl(const PlayerControl &);
     PlayerControl &operator=(const PlayerControl &);
