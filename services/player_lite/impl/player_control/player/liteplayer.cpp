@@ -41,7 +41,6 @@ const uint32_t DECODER_DEFAULT_HEIGHT = 1080;
 const uint32_t QUEUE_BUFFER_FULL_SLEEP_TIME_US = 5000u;
 const uint32_t NO_DATA_READ_SLEEP_TIME_US = 5000u;
 const uint32_t MAX_EVENT_MESSAGE_NUM = 128;
-const uint32_t MAX_AUDIO_SEND_FRAME_FULL_NUM = 10;
 
 namespace {
     /* playing position notify interval in ms */
@@ -58,7 +57,7 @@ PlayerControl::PlayerControl() : stateMachine_(nullptr), observer_(nullptr), isI
     schThreadExit_(false), loop_(false), hasRenderAudioEos_(false), hasRenderVideoEos_(false), renderSleepTime_(0),
     leftVolume_(-1.0f), rightVolume_(-1.0f), schProcess_(0), seekToTimeMs_(-1), firstAudioFrameAfterSeek_(false),
     firstVideoFrameAfterSeek_(false), sourceType_(SOURCE_TYPE_BUT), fd_(-1), playerSource_(nullptr),
-    sinkManager_(nullptr), audioDecoder_(nullptr), videoDecoder_(nullptr), audioStreamType_(0), continuousAudFull_(0),
+    sinkManager_(nullptr), audioDecoder_(nullptr), videoDecoder_(nullptr), audioStreamType_(0),
     isPaused_(false)
 {
     eventCallback_.player = nullptr;
@@ -1312,17 +1311,12 @@ void PlayerControl::PushPacketToADecoderInner(void)
     inputData.flag = 0;
     ret = audioDecoder_->QueueInputBuffer(inputData, GET_BUFFER_TIMEOUT_MS);
     if (ret == CODEC_ERR_STREAM_BUF_FULL) {
-        continuousAudFull_++;
-        if (continuousAudFull_ == MAX_AUDIO_SEND_FRAME_FULL_NUM) {
-            MEDIA_INFO_LOG("adec continue full reach to max num %d \n", MAX_AUDIO_SEND_FRAME_FULL_NUM);
-            continuousAudFull_ = 0;
-            ClearCachePacket();
-        } else {
-            renderSleepTime_ = QUEUE_BUFFER_FULL_SLEEP_TIME_US;
-        }
+        // Decoder queue is full: keep the packet cached and retry later.
+        // Dropping the packet here loses audio permanently, especially at playback
+        // startup when the render side has not started consuming yet.
+        renderSleepTime_ = QUEUE_BUFFER_FULL_SLEEP_TIME_US;
         return;
     }
-    continuousAudFull_ = 0;
     if (firstAudioFrameAfterSeek_ && IsValidPacket(formatPacket_)) {
         firstAudioFrameAfterSeek_ = false;
         MEDIA_INFO_LOG("push firstAudioFrameAfterSeek_ success, pts:%lld", inputData.pts);
