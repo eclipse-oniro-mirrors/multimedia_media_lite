@@ -10,25 +10,25 @@
 
 This repository provides APIs for media-related capabilities such as recording, playback, parsing, and decoding, and the engine capability for media recording and playback. The following aspects are covered on top of these capabilities:
 
-· Board-level configuration: `config.gni` introduces arguments for camera configuration files and the display library and centralizes board mappings; the OS08A20 sensor and media/codec ini files are deployed to the data directory via copy targets, so supporting another board only requires a new mapping rather than build target changes.
+- Board-level configuration: `config.gni` introduces arguments for camera configuration files and the display library and centralizes board mappings; the OS08A20 sensor and media/codec ini files are deployed to the data directory via copy targets, so supporting another board only requires a new mapping rather than build target changes.
 
-· Media service component description: `services/bundle.json` registers the media service component and complements the service-side build targets and dependencies.
+- Media service component description: `services/bundle.json` registers the media service component and complements the service-side build targets and dependencies.
 
-· HDMI hot-plug support: a hot-plug build switch and a connection detection counter allow the output device to switch between HDMI and the speaker.
+- HDMI hot-plug support: a hot-plug build switch and a connection detection counter allow the output device to switch between HDMI and the speaker.
 
-· Dual codec interface adaptation: the decoder and the audio/video sinks provide both the new `InputInfo`/`OutputInfo` APIs and the original `CodecBuffer` APIs under `MEDIA_INTERFACE_V1_0`, staying compatible with the new codec HDI.
+- Dual codec interface adaptation: the decoder and the audio/video sinks provide both the new `InputInfo`/`OutputInfo` APIs and the original `CodecBuffer` APIs under `MEDIA_INTERFACE_V1_0`, staying compatible with the new codec HDI.
 
-· Common playback-control module: `liteplayer_comm.cpp/h` encapsulates format-to-MIME mapping, timed condition-variable waiting, and video resolution query logic to reduce duplication.
+- Common playback-control module: `liteplayer_comm.cpp/h` encapsulates format-to-MIME mapping, timed condition-variable waiting, and video resolution query logic to reduce duplication.
 
-· Playback test samples: `test/demo` provides AAC, video, Surface, and plugin playback samples to help verify the playback chain.
+- Playback test samples: `test/demo` provides AAC, video, Surface, and plugin playback samples to help verify the playback chain.
 
-· Display library linking and build configuration: display library linking becomes configurable and the `frameworks` side allows product-specific link flags; the build config adds recorder include paths and dependencies and moves test targets into a dedicated test section.
+- Display library linking and build configuration: display library linking becomes configurable and the `frameworks` side allows product-specific link flags; the build config adds recorder include paths and dependencies and moves test targets into a dedicated test section.
 
-· Core playback flow: `liteplayer` is refactored with common logic split out, improving pause-state detection, separated audio/video packet pushing, split audio output initialization, and buffer-full back-off handling for more robust scheduling.
+- Core playback flow: `liteplayer` is refactored with common logic split out, improving pause-state detection, separated audio/video packet pushing, split audio output initialization, and buffer-full back-off handling for more robust scheduling.
 
-· Demuxer and decoder interfaces: file-info retrieval uses the unified interface with corrected field spelling, and the decoder `SetPortBufferMode` signature is aligned with the new definition.
+- Demuxer and decoder interfaces: file-info retrieval uses the unified interface with corrected field spelling, and the decoder `SetPortBufferMode` signature is aligned with the new definition.
 
-· Open-source compliance configuration: `OAT.xml` adds HiSilicon and RKH copyright declarations.
+- Open-source compliance configuration: `OAT.xml` adds HiSilicon and RKH copyright declarations.
 
 **Figure  1**  Position of this repository \(in the dotted blue box\) in the multimedia subsystem<a name="fig1737281407"></a>  
 ![](figures/position-of-this-repository-(in-the-dotted-blue-box)-in-the-multimedia-subsystem.png "position-of-this-repository-(in-the-dotted-blue-box)-in-the-multimedia-subsystem")
