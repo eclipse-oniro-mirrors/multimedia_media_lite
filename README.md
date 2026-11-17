@@ -10,8 +10,6 @@
 
 This repository provides APIs for media-related capabilities such as recording, playback, parsing, and decoding, and the engine capability for media recording and playback. The following aspects are covered on top of these capabilities:
 
-- Board-level configuration: `config.gni` introduces arguments for camera configuration files and the display library and centralizes board mappings; the OS08A20 sensor and media/codec ini files are deployed to the data directory via copy targets, so supporting another board only requires a new mapping rather than build target changes.
-
 - Media service component description: `services/bundle.json` registers the media service component and complements the service-side build targets and dependencies.
 
 - HDMI hot-plug support: a hot-plug build switch and a connection detection counter allow the output device to switch between HDMI and the speaker.
@@ -27,8 +25,6 @@ This repository provides APIs for media-related capabilities such as recording, 
 - Core playback flow: `liteplayer` is refactored with common logic split out, improving pause-state detection, separated audio/video packet pushing, split audio output initialization, and buffer-full back-off handling for more robust scheduling.
 
 - Demuxer and decoder interfaces: file-info retrieval uses the unified interface with corrected field spelling, and the decoder `SetPortBufferMode` signature is aligned with the new definition.
-
-- Open-source compliance configuration: `OAT.xml` adds HiSilicon and RKH copyright declarations.
 
 **Figure  1**  Position of this repository \(in the dotted blue box\) in the multimedia subsystem<a name="fig1737281407"></a>  
 ![](figures/position-of-this-repository-(in-the-dotted-blue-box)-in-the-multimedia-subsystem.png "position-of-this-repository-(in-the-dotted-blue-box)-in-the-multimedia-subsystem")
